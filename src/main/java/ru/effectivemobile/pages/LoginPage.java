@@ -1,28 +1,26 @@
 package ru.effectivemobile.pages;
 
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
 
-public class LoginPage {
+public class LoginPage extends BasePage {
 
-    public LoginPage openPage() {
-//        open("https://demo.reportportal.io");
-        open("http://localhost:8080/");
-        return this;
+    public AuthorizedPage login(String login, String password) {
+        enterLogin(login);
+        enterPassword(password);
+        clickLoginButton();
+
+        return PageFactory.detectAuthorizedPage();
     }
 
-    public LoginPage enterLogin(String login) {
-        $("[name='login']").shouldBe(visible).setValue(login);
-        return this;
+    private void enterLogin(String login) {
+        $("input[name='login']").setValue(login);
     }
 
-    public LoginPage enterPassword(String password) {
-        $("[name='password']").shouldBe(visible).setValue(password);
-        return this;
+    private void enterPassword(String password) {
+        $("input[name='password']").setValue(password);
     }
 
-    public void clickLoginButton() {
+    private void clickLoginButton() {
         $("button[type='submit']").click();
     }
 }
