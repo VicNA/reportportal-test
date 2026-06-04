@@ -21,6 +21,7 @@
         <selenide.version>7.15.1</selenide.version>
         <restassured.version>6.0.0</restassured.version>
         <jackson.version>2.21.4</jackson.version>
+        <datafaker.version>2.5.4</datafaker.version>
     </properties>
 
     <dependencies>
@@ -44,11 +45,24 @@
             <version>${jackson.version}</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+            <scope>compile</scope>
+        </dependency>
 
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>${restassured.version}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>net.datafaker</groupId>
+            <artifactId>datafaker</artifactId>
+            <version>${datafaker.version}</version>
             <scope>compile</scope>
         </dependency>
 
