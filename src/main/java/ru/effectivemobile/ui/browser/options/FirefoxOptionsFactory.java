@@ -1,7 +1,8 @@
-package ru.effectivemobile.browser;
+package ru.effectivemobile.ui.browser.options;
 
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.firefox.FirefoxOptions;
+import ru.effectivemobile.ui.browser.BrowserOptionsFactory;
 import ru.effectivemobile.config.UiConfig;
 
 public class FirefoxOptionsFactory implements BrowserOptionsFactory {

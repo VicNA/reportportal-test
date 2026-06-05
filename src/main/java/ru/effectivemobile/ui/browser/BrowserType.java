@@ -1,4 +1,4 @@
-package ru.effectivemobile.browser;
+package ru.effectivemobile.ui.browser;
 
 public enum BrowserType {
     CHROME,

@@ -1,14 +1,15 @@
-package ru.effectivemobile.browser;
+package ru.effectivemobile.ui.browser.options;
 
 import org.openqa.selenium.MutableCapabilities;
-import org.openqa.selenium.edge.EdgeOptions;
+import org.openqa.selenium.chrome.ChromeOptions;
+import ru.effectivemobile.ui.browser.BrowserOptionsFactory;
 import ru.effectivemobile.config.UiConfig;
 
-public class EdgeOptionsFactory implements BrowserOptionsFactory {
+public class ChromeOptionsFactory implements BrowserOptionsFactory {
 
     @Override
     public MutableCapabilities create(UiConfig config) {
-        EdgeOptions options = new EdgeOptions();
+        ChromeOptions options = new ChromeOptions();
 
         if (config.headless()) {
             options.addArguments("--headless=new");

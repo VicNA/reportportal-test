@@ -1,9 +1,8 @@
-package ru.effectivemobile.pages;
+package ru.effectivemobile.ui.pages;
 
 import com.codeborne.selenide.SelenideElement;
-import ru.effectivemobile.pages.components.SidebarComponent;
+import ru.effectivemobile.ui.pages.components.SidebarComponent;
 
-import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$x;
 
 public abstract class AuthorizedPage {

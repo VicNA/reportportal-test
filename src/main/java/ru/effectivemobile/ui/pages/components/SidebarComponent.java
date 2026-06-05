@@ -1,6 +1,6 @@
-package ru.effectivemobile.pages.components;
+package ru.effectivemobile.ui.pages.components;
 
-import ru.effectivemobile.pages.LaunchesPage;
+import ru.effectivemobile.ui.pages.LaunchesPage;
 
 import static com.codeborne.selenide.Selenide.$;
 

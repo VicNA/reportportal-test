@@ -1,4 +1,4 @@
-package ru.effectivemobile.pages.components;
+package ru.effectivemobile.ui.pages.components;
 
 import com.codeborne.selenide.SelenideElement;
 

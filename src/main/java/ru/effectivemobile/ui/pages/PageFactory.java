@@ -1,4 +1,4 @@
-package ru.effectivemobile.pages;
+package ru.effectivemobile.ui.pages;
 
 import com.codeborne.selenide.WebDriverRunner;
 import ru.effectivemobile.utils.WaitUtils;
