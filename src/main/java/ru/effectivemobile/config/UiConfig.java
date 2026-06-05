@@ -2,7 +2,7 @@ package ru.effectivemobile.config;
 
 import ru.effectivemobile.browser.BrowserType;
 
-public record FrameworkConfig(
+public record UiConfig(
         BrowserType browser,
         boolean headless,
         boolean torEnabled,
