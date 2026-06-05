@@ -1,6 +1,6 @@
 package ru.effectivemobile.config;
 
-import ru.effectivemobile.browser.BrowserType;
+import ru.effectivemobile.ui.browser.BrowserType;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ public class AppConfig {
     private static final UiConfig UI;
 
     static {
-        Properties properties = new Properties();
+        Properties properties = loadProperties();
 
         API = buildApiConfig(properties);
         UI = buildUiConfig(properties);
@@ -37,6 +37,8 @@ public class AppConfig {
 
     private static UiConfig buildUiConfig(Properties props) {
         return new UiConfig(
+                getProperty("login", props),
+                getProperty("password", props),
                 BrowserType.valueOf(getProperty("browser", props).toUpperCase()),
                 Boolean.parseBoolean(getProperty("headless", props)),
                 Boolean.parseBoolean(getProperty("tor", props)),
@@ -45,14 +47,8 @@ public class AppConfig {
         );
     }
 
-    private static String toEnvKey(String key) {
-        return key.replace(".", "_")
-                .replace("-", "_")
-                .toUpperCase();
-    }
-
     private static String getProperty(String key, Properties props) {
-        String envKey = toEnvKey(key);
+        String envKey = key.toUpperCase();
 
         String value = System.getenv(envKey);
         if (value != null && !value.isBlank()) {
