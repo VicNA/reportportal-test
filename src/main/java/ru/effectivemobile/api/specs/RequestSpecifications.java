@@ -4,19 +4,20 @@ import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.http.ContentType;
 import io.restassured.specification.RequestSpecification;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import ru.effectivemobile.config.ApiConfig;
+import ru.effectivemobile.config.AppConfig;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestSpecifications {
 
-    private RequestSpecifications() {
-    }
-
     public static RequestSpecification defaultSpec() {
+        ApiConfig api = AppConfig.api();
+
         return new RequestSpecBuilder()
-//                .setBaseUri("http://localhost:8080/")
-                .setBaseUri("https://demo.reportportal.io/")
-                .addHeader("Authorization",
-//                        "Bearer " + "rp-test_PxS6WrN7ToS8B5qM6cgc3n8WYt8AUmJnH2Ca022mkhhT3bzmziypGNh_r_4FYfcx")
-                        "Bearer " + "VikN-Api_zgwrtDTSRE-cllQMRbmTCQ85HnDZ3kWrfGEpGyiMRc4VZtbSr0Wm2z3o6OZNDirJ")
+                .setBaseUri(api.endpoint())
+                .addHeader("Authorization", "Bearer " + api.apiKey())
                 .setContentType(ContentType.JSON)
                 .log(LogDetail.ALL)
                 .build();

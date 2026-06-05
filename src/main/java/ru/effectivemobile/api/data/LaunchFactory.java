@@ -11,7 +11,7 @@ public final class LaunchFactory {
 
     public static CreateLaunchRequest launch() {
         return CreateLaunchRequest.builder()
-                .startTime(OffsetDateTime.now().toString())
+                .startTime(OffsetDateTime.now())
                 .name(faker.app().name())
                 .description(faker.lorem().sentence())
                 .mode("DEFAULT")
