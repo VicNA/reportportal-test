@@ -3,6 +3,7 @@ package ru.effectivemobile.api.services;
 import io.restassured.response.Response;
 import ru.effectivemobile.api.client.ApiClient;
 import ru.effectivemobile.api.models.CreateLaunchRequest;
+import ru.effectivemobile.api.models.FinishLaunchRequest;
 import ru.effectivemobile.api.models.UpdateLaunchRequest;
 import ru.effectivemobile.config.ApiConfig;
 import ru.effectivemobile.config.AppConfig;
@@ -19,7 +20,7 @@ public class LaunchesService extends ApiClient {
         return given()
                 .spec(requestSpec)
                 .when()
-                .get(api.launchesPath());
+                .get(api.launchPath());
     }
 
     public Response createLaunch(CreateLaunchRequest request) {
@@ -42,10 +43,18 @@ public class LaunchesService extends ApiClient {
                 .spec(requestSpec)
                 .body(request)
                 .when()
-                .put("%s/%d/update".formatted(api.launchPath(), id));
+                .put("%s/%s/update".formatted(api.launchPath(), id));
     }
 
-    public Response deleteLaunch(UUID id) {
+    public Response finishLaunch(UUID id, FinishLaunchRequest request) {
+        return given()
+                .spec(requestSpec)
+                .body(request)
+                .when()
+                .put("%s/%s/finish".formatted(api.launchPath(), id));
+    }
+
+    public Response deleteLaunch(Long id) {
         return given()
                 .spec(requestSpec)
                 .when()
