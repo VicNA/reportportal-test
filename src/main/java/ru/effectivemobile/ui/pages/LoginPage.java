@@ -1,14 +1,26 @@
 package ru.effectivemobile.ui.pages;
 
+import com.codeborne.selenide.SelenideElement;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import ru.effectivemobile.config.AppConfig;
 import ru.effectivemobile.config.UiConfig;
 
+import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 
 public class LoginPage {
 
+    private static final Logger logger = LogManager.getLogger(LoginPage.class);
+
+    private final SelenideElement inputLogin = $("input[name='login']");
+    private final SelenideElement inputPassword = $("input[name='password']");
+    private final SelenideElement submitButton = $("button[type='submit']");
+
     public AuthorizedPage login() {
         UiConfig ui = AppConfig.ui();
+
+        logger.info("Login as {}", ui.login());
 
         enterLogin(ui.login());
         enterPassword(ui.password());
@@ -18,14 +30,16 @@ public class LoginPage {
     }
 
     private void enterLogin(String login) {
-        $("input[name='login']").setValue(login);
+        inputLogin.setValue(login);
     }
 
     private void enterPassword(String password) {
-        $("input[name='password']").setValue(password);
+        inputPassword.setValue(password);
     }
 
     private void clickLoginButton() {
-        $("button[type='submit']").click();
+        submitButton.click();
+//        WaitUtils.waitForFormToUnload();
+        submitButton.shouldNotBe(visible);
     }
 }

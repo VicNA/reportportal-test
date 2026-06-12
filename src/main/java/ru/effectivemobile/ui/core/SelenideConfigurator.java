@@ -13,6 +13,6 @@ public final class SelenideConfigurator {
         Configuration.browser = config.browser().name().toLowerCase();
         Configuration.browserCapabilities = BrowserFactory.create(config);
         Configuration.timeout = config.timeout();
-        Configuration.remote = config.url();
+        Configuration.baseUrl = config.url();
     }
 }
