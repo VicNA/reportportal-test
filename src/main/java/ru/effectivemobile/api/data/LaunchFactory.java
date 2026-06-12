@@ -13,7 +13,7 @@ public final class LaunchFactory {
     public static CreateLaunchRequest create() {
         return CreateLaunchRequest.builder()
                 .startTime(OffsetDateTime.now())
-                .name("Launch Api Test")
+                .name("Launch Api Test: " + faker.app().name())
                 .description(faker.lorem().sentence())
                 .mode("DEFAULT")
                 .build();

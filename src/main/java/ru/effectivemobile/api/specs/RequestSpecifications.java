@@ -7,14 +7,11 @@ import io.restassured.specification.RequestSpecification;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.effectivemobile.config.ApiConfig;
-import ru.effectivemobile.config.AppConfig;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class RequestSpecifications {
 
-    public static RequestSpecification defaultSpec() {
-        ApiConfig api = AppConfig.api();
-
+    public static RequestSpecification defaultSpec(ApiConfig api) {
         return new RequestSpecBuilder()
                 .setBaseUri(api.endpoint())
                 .addHeader("Authorization", "Bearer " + api.apiKey())
