@@ -1,25 +1,22 @@
 package ru.effectivemobile.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.restassured.RestAssured;
-import io.restassured.config.ObjectMapperConfig;
-import org.junit.jupiter.api.BeforeAll;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.TestInfo;
 
 public abstract class BaseApiTest {
 
-    @BeforeAll
-    static void setup() {
-        ObjectMapper jacksonMapper = new ObjectMapper()
-                .registerModule(new JavaTimeModule())
-                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    private static final Logger logger = LogManager.getLogger(BaseApiTest.class);
 
-        RestAssured.config = RestAssured.config()
-                .objectMapperConfig(
-                        ObjectMapperConfig.objectMapperConfig()
-                                .jackson2ObjectMapperFactory(
-                                        (cls, charset) -> jacksonMapper));
+    @BeforeEach
+    public void setUp(TestInfo testInfo) {
+        logger.info("START TEST: {}", testInfo.getDisplayName());
     }
 
+    @AfterEach
+    public void tearDown(TestInfo testInfo) {
+        logger.info("FINISH TEST: {}", testInfo.getDisplayName());
+    }
 }

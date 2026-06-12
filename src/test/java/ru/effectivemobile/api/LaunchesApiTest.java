@@ -21,16 +21,6 @@ public class LaunchesApiTest extends BaseApiTest {
 
     private static final LaunchesService launchesService = new LaunchesService();
 
-//    @AfterAll
-//    static void tearDown() {
-//        launchesService.getLaunches()
-//                .jsonPath()
-//                .getList("content", LaunchResponse.class)
-//                .forEach(launch -> {
-//                    launchesService.deleteLaunch(launch.getId());
-//                });
-//    }
-
     @DisplayName("Get list launches")
     @Test
     void shouldGetLaunches() {
