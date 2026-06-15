@@ -15,6 +15,7 @@ import ru.effectivemobile.api.services.LaunchesService;
 import ru.effectivemobile.ui.pages.AuthorizedPage;
 import ru.effectivemobile.ui.pages.LaunchesPage;
 import ru.effectivemobile.ui.pages.LoginPage;
+import ru.effectivemobile.utils.SourceValueConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -150,7 +151,10 @@ public class LaunchesUiTest extends BaseUiTest {
 
     @DisplayName("Change page size")
     @ParameterizedTest
-    @ValueSource(ints = {3, 50})
+    @ValueSource(ints = {
+            SourceValueConstants.THREE_ELEMENTS_PER_PAGE,
+            SourceValueConstants.FIFTY_ELEMENTS_PER_PAGE}
+    )
     void shouldChangePageSize(int pageSize) {
         LaunchesPage launchesPage = getLaunchesPage();
 
@@ -161,7 +165,10 @@ public class LaunchesUiTest extends BaseUiTest {
 
     @DisplayName("Switch page next-previous")
     @ParameterizedTest
-    @ValueSource(ints = {3, 50})
+    @ValueSource(ints = {
+            SourceValueConstants.THREE_ELEMENTS_PER_PAGE,
+            SourceValueConstants.FIFTY_ELEMENTS_PER_PAGE}
+    )
     void shouldSwitchPages(int pageSize) {
         LaunchesPage launchesPage = getLaunchesPage();
 
