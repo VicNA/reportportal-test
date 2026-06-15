@@ -4,6 +4,8 @@ import com.codeborne.selenide.ElementsCollection;
 import com.codeborne.selenide.SelenideElement;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.Keys;
 
 import java.util.List;
@@ -13,10 +15,11 @@ import static com.codeborne.selenide.Condition.text;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selenide.$;
 import static com.codeborne.selenide.Selenide.$$;
-import static com.codeborne.selenide.Selenide.$x;
 
 @Accessors(fluent = true)
 public class LaunchesPage extends AuthorizedPage {
+
+    private static final Logger logger = LogManager.getLogger(LaunchesPage.class);
 
     @Getter
     private final ElementsCollection launchRows = $$("[class*='gridRow__grid-row-wrapper']");
@@ -55,6 +58,8 @@ public class LaunchesPage extends AuthorizedPage {
     }
 
     public LaunchesPage search(String input) {
+        logger.info("Launch search for '{}'", input);
+
         addFilterButton.click();
         inputFilter.setValue(input);
 
@@ -68,6 +73,8 @@ public class LaunchesPage extends AuthorizedPage {
     }
 
     public LaunchesPage saveFilter(String filter) {
+        logger.info("Save '{}' launch filter", filter);
+
         clickSaveFilter();
         enterNewFilter(filter);
         clickAddNewFilter();
@@ -80,6 +87,8 @@ public class LaunchesPage extends AuthorizedPage {
     }
 
     public LaunchesPage sortByName() {
+        logger.info("Sort by Launch name");
+
         addFilterButton.click();
         dropdownSorting.click();
         dropdownSortingOptions.find(text("Launch name")).click();
@@ -88,6 +97,8 @@ public class LaunchesPage extends AuthorizedPage {
     }
 
     public LaunchesPage changePageSize(int size) {
+        logger.info("Change the page size to {}", size);
+
         pageSizeControl.click();
         inputPageSize.setValue(String.valueOf(size))
                 .sendKeys(Keys.ENTER);
@@ -118,6 +129,8 @@ public class LaunchesPage extends AuthorizedPage {
     }
 
     public LaunchesPage refresh() {
+        logger.info("Refresh Launches page");
+
         actionButtons.find(text("Refresh")).click();
 
         return this;
