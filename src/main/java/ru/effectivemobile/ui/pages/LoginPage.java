@@ -30,7 +30,7 @@ public class LoginPage {
     }
 
     private void enterLogin(String login) {
-        inputLogin.setValue(login);
+        inputLogin.shouldBe(visible).setValue(login);
     }
 
     private void enterPassword(String password) {
@@ -39,7 +39,6 @@ public class LoginPage {
 
     private void clickLoginButton() {
         submitButton.click();
-//        WaitUtils.waitForFormToUnload();
         submitButton.shouldNotBe(visible);
     }
 }

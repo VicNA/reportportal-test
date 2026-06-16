@@ -14,7 +14,7 @@ public abstract class ApiClient {
 
     protected final ApiConfig api = AppConfig.api();
 
-    protected RequestSpecification requestSpec = RequestSpecifications.defaultSpec(api);
+    protected final RequestSpecification requestSpec = RequestSpecifications.defaultSpec(api);
 
     static {
         ObjectMapper jacksonMapper = new ObjectMapper()
