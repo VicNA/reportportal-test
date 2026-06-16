@@ -10,7 +10,6 @@ import org.junit.jupiter.api.TestInfo;
 import ru.effectivemobile.config.AppConfig;
 import ru.effectivemobile.config.UiConfig;
 import ru.effectivemobile.ui.core.SelenideConfigurator;
-import ru.effectivemobile.utils.WaitUtils;
 
 import static com.codeborne.selenide.Selenide.open;
 
@@ -30,14 +29,12 @@ public abstract class BaseUiTest {
         logger.info("START TEST: {}", testInfo.getDisplayName());
 
         open(config.url());
-
-        WaitUtils.waitForFormToLoad();
     }
 
     @AfterEach
     void tearDownTest(TestInfo testInfo) {
-        logger.info("FINISH TEST: {}", testInfo.getDisplayName());
-
         Selenide.closeWebDriver();
+
+        logger.info("FINISH TEST: {}", testInfo.getDisplayName());
     }
 }

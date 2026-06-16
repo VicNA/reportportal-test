@@ -8,19 +8,17 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import ru.effectivemobile.api.data.LaunchFactory;
 import ru.effectivemobile.api.models.CreateLaunchResponse;
-import ru.effectivemobile.api.models.LaunchResponse;
 import ru.effectivemobile.api.services.LaunchesService;
 import ru.effectivemobile.ui.pages.AuthorizedPage;
 import ru.effectivemobile.ui.pages.LaunchesPage;
 import ru.effectivemobile.ui.pages.LoginPage;
+import ru.effectivemobile.utils.LaunchesHelper;
+import ru.effectivemobile.utils.LaunchesPageHelper;
 import ru.effectivemobile.utils.SourceValueConstants;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static com.codeborne.selenide.CollectionCondition.size;
@@ -35,23 +33,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class LaunchesUiTest extends BaseUiTest {
 
     private static final LaunchesService launchesService = new LaunchesService();
-    private static final List<LaunchResponse> responses = new ArrayList<>();
+    private static final LaunchesHelper launchesHelper = new LaunchesHelper(launchesService);
+    private static final LaunchesPageHelper pageHelper = new LaunchesPageHelper();
 
     @BeforeAll
     static void setup() {
-        Stream.generate(LaunchesUiTest::createLaunch)
+        Stream.generate(launchesHelper::createLaunch)
                 .map(CreateLaunchResponse::getId)
-                .map(id -> launchesService.getLaunchById(id).as(LaunchResponse.class))
                 .limit(5)
-                .forEach(responses::add);
+                .forEach(launchesHelper::getLaunchById);
     }
 
     @AfterAll
     static void teardown() {
-        responses.forEach(resp -> {
-            launchesService.finishLaunch(resp.getUuid(), LaunchFactory.finish());
-            launchesService.deleteLaunch(resp.getId());
-        });
+        launchesHelper.clear();
     }
 
     @DisplayName("Open Launches page")
@@ -73,18 +68,18 @@ public class LaunchesUiTest extends BaseUiTest {
     @DisplayName("Display launches list")
     @Test
     void shouldDisplayLaunchesList() {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
         launchesPage.launchRows()
-                .shouldHave(sizeGreaterThanOrEqual(responses.size()));
+                .shouldHave(sizeGreaterThanOrEqual(launchesHelper.responseSize()));
     }
 
     @DisplayName("Find launches by name")
     @Test
     void shouldFindLaunchByName() {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
-        String launchName = responses.getFirst().getName();
+        String launchName = launchesHelper.getFirstLaunch().getName();
         launchesPage.search(launchName);
 
         launchesPage.launchRows()
@@ -95,7 +90,7 @@ public class LaunchesUiTest extends BaseUiTest {
     @DisplayName("Empty result for find unknown launch")
     @Test
     void shouldShowEmptyStateForUnknownLaunch() {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
         launchesPage.search("launch-that-does-not-exist");
 
@@ -107,9 +102,9 @@ public class LaunchesUiTest extends BaseUiTest {
     @DisplayName("Clear search input filter")
     @Test
     void shouldClearSearchFilter() {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
-        launchesPage.search(responses.getFirst().getName())
+        launchesPage.search(launchesHelper.getFirstLaunch().getName())
                 .launchRows()
                 .shouldHave(size(1));
 
@@ -122,11 +117,11 @@ public class LaunchesUiTest extends BaseUiTest {
     @DisplayName("Save search filter")
     @Test
     void shouldSaveSearchFilter() {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
-        String filterName = appName(new Faker(), 3);
+        String filterName = pageHelper.appName(new Faker(), 3);
 
-        launchesPage.search(responses.getLast().getName())
+        launchesPage.search(launchesHelper.getFirstLaunch().getName())
                 .saveFilter(filterName)
                 .sidebar()
                 .openLaunchesPage()
@@ -137,7 +132,7 @@ public class LaunchesUiTest extends BaseUiTest {
     @DisplayName("Sort launches by name")
     @Test
     void shouldSortLaunchesByName() {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
         List<String> expected = launchesPage.launchNamesFromLaunchRows();
         Collections.sort(expected);
@@ -156,7 +151,7 @@ public class LaunchesUiTest extends BaseUiTest {
             SourceValueConstants.FIFTY_ELEMENTS_PER_PAGE}
     )
     void shouldChangePageSize(int pageSize) {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
         launchesPage.changePageSize(pageSize)
                 .launchRows()
@@ -170,7 +165,7 @@ public class LaunchesUiTest extends BaseUiTest {
             SourceValueConstants.FIFTY_ELEMENTS_PER_PAGE}
     )
     void shouldSwitchPages(int pageSize) {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
         launchesPage.changePageSize(pageSize);
 
@@ -190,7 +185,7 @@ public class LaunchesUiTest extends BaseUiTest {
     @DisplayName("Mark all launch rows")
     @Test
     void shouldMarkAllLaunchRows() {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
         launchesPage.checkboxAllRows()
                 .selectedItems()
@@ -200,39 +195,14 @@ public class LaunchesUiTest extends BaseUiTest {
     @DisplayName("Refresh launches list")
     @Test
     void shouldRefreshLaunchesList() {
-        LaunchesPage launchesPage = getLaunchesPage();
+        LaunchesPage launchesPage = pageHelper.getLaunchesPage();
 
         int before = launchesPage.launchRows().size();
 
-        addLaunch();
+        launchesHelper.addLaunch(launchesHelper.createLaunch());
 
         launchesPage.refresh()
                 .launchRows()
                 .shouldHave(sizeGreaterThanOrEqual(before + 1));
-    }
-
-    private LaunchesPage getLaunchesPage() {
-        return new LoginPage().login()
-                .sidebar()
-                .openLaunchesPage();
-    }
-
-    private static CreateLaunchResponse createLaunch() {
-        return launchesService.createLaunch(LaunchFactory.create())
-                .as(CreateLaunchResponse.class);
-    }
-
-    private static void addLaunch() {
-        UUID id = createLaunch().getId();
-        responses.add(launchesService.getLaunchById(id).as(LaunchResponse.class));
-    }
-
-    private static String appName(Faker faker, int minLength) {
-        String name;
-        do {
-            name = faker.app().name();
-        } while (name.length() < minLength);
-
-        return name;
     }
 }
