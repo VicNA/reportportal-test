@@ -1,16 +1,18 @@
 package ru.effectivemobile.api;
 
 import io.restassured.response.Response;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.effectivemobile.api.data.LaunchFactory;
+import ru.effectivemobile.api.models.CreateLaunchRequest;
 import ru.effectivemobile.api.models.CreateLaunchResponse;
 import ru.effectivemobile.api.models.LaunchResponse;
 import ru.effectivemobile.api.models.UpdateLaunchRequest;
 import ru.effectivemobile.api.services.LaunchesService;
 import ru.effectivemobile.api.specs.ResponseSpecifications;
+import ru.effectivemobile.utils.LaunchesHelper;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -20,6 +22,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class LaunchesApiTest extends BaseApiTest {
 
     private static final LaunchesService launchesService = new LaunchesService();
+    private static final LaunchesHelper launchesHelper = new LaunchesHelper(launchesService);
+
+    @AfterAll
+    static void teardown() {
+        launchesHelper.clear();
+    }
 
     @DisplayName("Get list launches")
     @Test
@@ -28,9 +36,9 @@ public class LaunchesApiTest extends BaseApiTest {
 
         response.then().spec(ResponseSpecifications.ok());
 
-        List<?> launches = response.jsonPath().getList("content");
-
-        assertFalse(launches.isEmpty());
+        assertFalse(response.jsonPath()
+                .getList("content")
+                .isEmpty());
     }
 
     @DisplayName("Create launch")
@@ -38,64 +46,63 @@ public class LaunchesApiTest extends BaseApiTest {
     void shouldCreateLaunch() {
         Response response = launchesService.createLaunch(LaunchFactory.create());
 
+        CreateLaunchResponse created = response.as(CreateLaunchResponse.class);
+        LaunchResponse launch = launchesHelper.getLaunchById(created.getId());
+
         response.then().spec(ResponseSpecifications.created());
 
-        CreateLaunchResponse created = response.as(CreateLaunchResponse.class);
-
         assertNotNull(created.getId());
-
-        LaunchResponse launch = getLaunchById(created.getId());
-
         assertEquals(created.getId(), launch.getUuid());
+    }
 
-        deleteLaunch(launch);
+    @DisplayName("Issue bad request when create launch")
+    @Test
+    void shouldIssueBadRequestWhenCreateLaunch() {
+        CreateLaunchRequest request = LaunchFactory.create();
+        request.setStartTime(null);
+
+        Response response = launchesService.createLaunch(request);
+
+        response.then().statusCode(400);
     }
 
     @DisplayName("Get launch by ID")
     @Test
     void shouldGetLaunchById() {
-        UUID uuid = createLaunch().getId();
-
+        UUID uuid = launchesHelper.createLaunch().getId();
         Response response = launchesService.getLaunchById(uuid);
+        LaunchResponse launch = launchesHelper.asLaunchResponse(response);
 
         response.then().spec(ResponseSpecifications.ok());
 
-        LaunchResponse launch = response.as(LaunchResponse.class);
-
         assertEquals(uuid, launch.getUuid());
-
-        deleteLaunch(launch);
     }
 
     @DisplayName("Update launch by ID")
     @Test
     void shouldUpdateLaunch() {
-        UUID id = createLaunch().getId();
-
-        LaunchResponse launch = getLaunchById(id);
+        UUID id = launchesHelper.createLaunch().getId();
+        LaunchResponse launch = launchesHelper.getLaunchById(id);
 
         String newDescription = "Updated description";
 
         Response response = launchesService.updateLaunch(
                 launch.getId(), new UpdateLaunchRequest(newDescription));
 
+        LaunchResponse updated = launchesHelper.getLaunchById(id);
+
         response.then().spec(ResponseSpecifications.ok());
 
-        LaunchResponse updated = getLaunchById(id);
-
         assertEquals(newDescription, updated.getDescription());
-
-        deleteLaunch(updated);
     }
 
     @DisplayName("Delete launch by ID")
     @Test
     void shouldDeleteLaunch() {
-        UUID id = createLaunch().getId();
-
+        UUID id = launchesHelper.createLaunch().getId();
         launchesService.finishLaunch(id, LaunchFactory.finish());
 
-        LaunchResponse launch = getLaunchById(id);
+        LaunchResponse launch = launchesHelper.getLaunchById(id);
 
         launchesService.deleteLaunch(launch.getId())
                 .then()
@@ -114,20 +121,5 @@ public class LaunchesApiTest extends BaseApiTest {
         launchesService.getLaunchById(randomId)
                 .then()
                 .spec(ResponseSpecifications.notFound());
-    }
-
-    private CreateLaunchResponse createLaunch() {
-        return launchesService.createLaunch(LaunchFactory.create())
-                .as(CreateLaunchResponse.class);
-    }
-
-    private LaunchResponse getLaunchById(UUID id) {
-        return launchesService.getLaunchById(id)
-                .as(LaunchResponse.class);
-    }
-
-    private void deleteLaunch(LaunchResponse launch) {
-        launchesService.finishLaunch(launch.getUuid(), LaunchFactory.finish());
-        launchesService.deleteLaunch(launch.getId());
     }
 }
