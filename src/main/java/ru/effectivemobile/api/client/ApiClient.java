@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.restassured.RestAssured;
+import io.restassured.config.LogConfig;
 import io.restassured.config.ObjectMapperConfig;
 import io.restassured.specification.RequestSpecification;
 import ru.effectivemobile.api.specs.RequestSpecifications;
@@ -25,6 +26,8 @@ public abstract class ApiClient {
                 .objectMapperConfig(
                         ObjectMapperConfig.objectMapperConfig()
                                 .jackson2ObjectMapperFactory(
-                                        (cls, charset) -> jacksonMapper));
+                                        (cls, charset) -> jacksonMapper))
+                .logConfig(LogConfig.logConfig()
+                        .blacklistHeader("Authorization"));
     }
 }
