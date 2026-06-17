@@ -44,7 +44,7 @@ public class LaunchesPage extends AuthorizedPage {
     private final SelenideElement clearSearchIcon = $("[class*='inputConditional__clear-icon']");
     private final SelenideElement addFilterButton = $("[class*='launchFiltersToolbar__add-filter-button']");
     private final SelenideElement inputNewFilter = $("input[class*='input__input']");
-    private final SelenideElement dropdownSorting = $("[class*='inputDropdownSorting__value'");
+    private final SelenideElement dropdownSorting = $("[class*='inputDropdownSorting__value']");
     private final SelenideElement checkboxHeaderCell = $("[class*='checkbox-header-cell']");
     private final SelenideElement pageSizeControl = $("[class*='pageSizeControl__size-text']");
     private final SelenideElement inputPageSize = $("input[class*='input__input']");
